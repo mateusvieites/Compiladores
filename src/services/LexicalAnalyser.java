@@ -15,7 +15,14 @@ public class LexicalAnalyser {
 			Map.Entry pairs = (Map.Entry)it.next(); 
 			if(pairs.getValue().equals("Label")){ 
 				System.out.println(pairs.getKey()); /* pega a chave da palavra X*/
-			} 
+			}else {
+				if(Character.isDigit(toBeAnalysed.charAt(0))){ /* começa com número */
+				
+				}else {
+					/* adicionar o elemento como identificador */
+				}
+					
+			}
 		}
 	}
 	
@@ -26,6 +33,7 @@ public class LexicalAnalyser {
 			if(Character.getType(aux) == Character.SPACE_SEPARATOR) {
 				if(!(toBeAnalysed.equals(""))) {
 					analyse(toBeAnalysed);
+					toBeAnalysed = "";
 				}
 			}else {
 				toBeAnalysed += aux;
