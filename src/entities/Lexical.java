@@ -1,10 +1,20 @@
 package entities;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class Lexical {
-
+	public static void main(String[] args) {
+		Iterator it = tokens.entrySet().iterator(); 
+		while (it.hasNext()) { 
+			Map.Entry pairs = (Map.Entry)it.next(); 
+			if(pairs.getValue().equals("Label")){ 
+				System.out.println(pairs.getKey()); 
+			} 
+		}
+	}
+	
 	private static Map<Integer,String> tokens = new HashMap<Integer,String>(){{
 			put(1,"Program"); put(2,"Label"); put(3,"Const"); put(4,"Var");
 			put(5,"Procedure"); put(6,"Begin"); put(7,"End"); put(8,"Integer");
