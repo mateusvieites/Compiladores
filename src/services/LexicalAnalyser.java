@@ -30,14 +30,27 @@ public class LexicalAnalyser {
 		String toBeAnalysed = "";
 		char c[] = text.toCharArray();
 		for(char aux : c) {
-			if(Character.getType(aux) == Character.SPACE_SEPARATOR) {
-				if(!(toBeAnalysed.equals(""))) {
-					analyse(toBeAnalysed);
-					toBeAnalysed = "";
-				}
-			}else {
+			System.out.println("Letra atual: " + aux);
+			if(Character.isDigit(aux) || Character.isLetter(aux)) {
+				System.out.println("Aux é letra: " + aux);
 				toBeAnalysed += aux;
+			}else {
+				if(!(toBeAnalysed.equals(""))) {
+					System.out.println("Aux diferente: " + aux);
+					//#ToDo analisar
+					toBeAnalysed = "";
+					if(aux != ' ') {
+						System.out.println("Aqui o:" + aux);
+						toBeAnalysed += aux;
+					}
+				}else {
+					if(Character.getType(aux) != 12) {
+						toBeAnalysed += aux;
+					}
+				}
+					
 			}
+			
 		}
 		
 	}
