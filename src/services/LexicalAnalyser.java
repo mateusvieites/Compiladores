@@ -6,24 +6,19 @@ import java.util.Map;
 import entities.Lexical;
 
 public class LexicalAnalyser {
-	Map<Integer, String> tokens = Lexical.getTokens();
+	Map<String, Integer> tokens = Lexical.getTokens();
 
-	public void analyse(String toBeAnalysed) {
-		Iterator it = tokens.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry pairs = (Map.Entry) it.next();
-			if (pairs.getValue().equals("Label")) {
-				System.out.println(pairs.getKey()); /* pegar a chave da palavra X */
-			} else {
-				if (Character.isDigit(toBeAnalysed.charAt(0))) { /* começa com número */
+	public int analyse(String toBeAnalysed) {
+        int value;
 
-				} else {
-					/* adicionar o elemento como identificador */
-				}
+        if (tokens.containsKey(toBeAnalysed)) {
+            value = tokens.get(toBeAnalysed);
+        } else {
+            value = 25;
+        }
 
-			}
-		}
-	}
+        return value;
+    }
 
 	private static boolean isDigitOrIsLetter(char charTest) {
 		return Character.isDigit(charTest) || Character.isLetter(charTest);
