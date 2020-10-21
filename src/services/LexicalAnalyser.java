@@ -3,15 +3,16 @@ package services;
 import java.awt.EventQueue;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Stack;
 
 import entities.Lexical;
 import windows.CompilerWindows;
 
 public class LexicalAnalyser {
 	Map<String, Integer> tokens = Lexical.getTokens();
-	String separator = "//";
-
-	public int analyse(String toBeAnalysed) {
+	Stack<String> stack = new Stack();;
+	public String analyse(String toBeAnalysed) {
+		System.out.println("Para ser analisado: " + toBeAnalysed);
 		int value;
 
 		if (tokens.containsKey(toBeAnalysed)) {
@@ -20,52 +21,53 @@ public class LexicalAnalyser {
 			value = 25;
 		}
 
-		return value;
+		return String.valueOf(value);
 	}
 
-	private static boolean isDigitOrIsLetter(char charTest) {
+	private boolean isDigitOrIsLetter(char charTest) {
 		return Character.isDigit(charTest) || Character.isLetter(charTest);
 	}
 
-	public void split(String text) {
-		int numberOfLines = 0;
-		String toBeAnalysed = "";
+	public String split(String text) {
 		String lexicalNumbers = "";
+		StringBuilder toBeAnalysed = new StringBuilder();
 		char c[] = text.toCharArray();
 		for (char aux : c) {
-
-			System.out.println("Letra atual: " + aux);
-
-			if (isDigitOrIsLetter(aux)) {
-				if (!isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
-					lexicalNumbers += analyse(toBeAnalysed) + separator;
-					toBeAnalysed = "";
-				}
-				System.out.println("Aux é letra: " + aux);
-				toBeAnalysed += aux;
-			} else {
-				if(aux == '\n') {
-					numberOfLines++;
-				}
-				
-				if (!(toBeAnalysed.equals(""))) {
-					System.out.println("Aux diferente: " + aux);
-					lexicalNumbers += analyse(toBeAnalysed) + separator;
-					toBeAnalysed = "";
-					if (aux != ' ' && aux != '\n'  && aux != '\r') {
-						System.out.println("Aqui o:" + aux);
-						toBeAnalysed += aux;
-					}
-				} else {
-					if (Character.getType(aux) != 12) {
-						toBeAnalysed += aux;
+			System.out.println(aux);
+			
+			if(isDigitOrIsLetter(aux)) {
+				if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0) {
+					if(!isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
+						stack.push(analyse(toBeAnalysed.toString()));
+						toBeAnalysed.setLength(0);
 					}
 				}
-
+				toBeAnalysed.append(aux);
+			}else {
+				if(aux != ' ' && aux != '\n' && aux != '\r') {
+					if(!toBeAnalysed.equals("")) {
+						stack.push(analyse(toBeAnalysed.toString()));
+						toBeAnalysed.setLength(0);
+						toBeAnalysed.append(aux);
+					}else {
+							toBeAnalysed.append(aux);	
+					}
+				}else {
+					if(toBeAnalysed.length() > 0) {
+							stack.push(analyse(toBeAnalysed.toString()));
+							toBeAnalysed.setLength(0);
+					}
+					
+				}
 			}
-
 		}
-		lexicalNumbers += analyse(toBeAnalysed);
+		stack.push(analyse(toBeAnalysed.toString()));
+		while (!stack.isEmpty()) 
+		{ 
+		    System.out.println(stack.pop()); 
+		}
+		String message = "Sucess!";
+		return message;
 
 	}
 }
