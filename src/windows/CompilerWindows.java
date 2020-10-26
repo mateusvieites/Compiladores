@@ -34,12 +34,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextPane;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 public class CompilerWindows extends JFrame{
 
 	private JPanel contentPane;
 	private static JTextArea jta;
 	private static JTextArea lines;
-	private static String FilePath;
+	private static String FilePath = "notAValidPath";
 	private JPanel paneColorText;
 	private Color colorText;
 	JTextPane console = new JTextPane();
@@ -75,7 +77,7 @@ public class CompilerWindows extends JFrame{
 	
 	public String validate(String toBeAnalysed) {
 		if(toBeAnalysed.equals(null) || toBeAnalysed.equals("") || toBeAnalysed.equals(" ")) {
-			return "error=There is nothing to compile";
+			return "error=nothing to compile";
 		}
 		LexicalAnalyser analyseThisText = new LexicalAnalyser();
 		return analyseThisText.split(jta.getText());
@@ -95,18 +97,31 @@ public class CompilerWindows extends JFrame{
 		JMenuItem saveMenuItem = new JMenuItem("Save");
 		saveMenuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				FileWriter arquivo;
-				try {
-					arquivo = new FileWriter(FilePath);
-					arquivo.write(jta.getText());
-					arquivo.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				
+				if(!FilePath.equals("notAValidPath")) {
+						FileWriter arquivo;
+						try {
+							arquivo = new FileWriter(FilePath);
+							arquivo.write(jta.getText());
+							arquivo.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 				}
+				
 				
 			}
 		});
+		
+		JMenuItem newMenuItem = new JMenuItem("New");
+		newMenuItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				jta.setText("");
+				FilePath = "notAValidPath";
+			}
+		});
+		fileMenu.add(newMenuItem);
 		fileMenu.add(saveMenuItem);
 		
 		JMenuItem openFileMenuItem = new JMenuItem("Open File");
@@ -114,9 +129,7 @@ public class CompilerWindows extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				FilePath = FileActions.filesGetFilePath();
 				
-				if(FilePath.equals(null) || FilePath == null) {
-					/*arquivo não selecionado */
-				}else {
+				if(!FilePath.equals("notAValidPath")) {
 					try {
 						jta.setText(FileActions.getText(FilePath));
 					} catch (IOException e) {
@@ -146,7 +159,7 @@ public class CompilerWindows extends JFrame{
 			public String getText() {
 				int caretPosition = jta.getDocument().getLength();
 				Element root = jta.getDocument().getDefaultRootElement();
-				String text = "1" + System.getProperty("line.separator");
+				String text = "1" + System.getProperty("line.separator");		
 				for (int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
 					text += i + System.getProperty("line.separator");
 				}

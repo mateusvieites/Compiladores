@@ -28,7 +28,7 @@ public class FileActions {
 				if (scanner.hasNext()) {
 					aux += '\n';
 				}
-				scanner.close();
+				
 			}
 		} catch (IOException exe) {
 			exe.printStackTrace();
@@ -47,7 +47,7 @@ public class FileActions {
 			File file = fileChooser.getSelectedFile();
 			return file.getPath();
 		} else {
-			return null;
+			return "notAValidPath";
 		}
 	}
 }
