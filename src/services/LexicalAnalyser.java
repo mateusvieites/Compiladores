@@ -1,16 +1,13 @@
 package services;
 
-import java.awt.EventQueue;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
 import entities.Lexical;
-import windows.CompilerWindows;
 
 public class LexicalAnalyser {
 	Map<String, Integer> tokens = Lexical.getTokens();
-	Stack<String> stack = new Stack();;
+	Stack<String> stack = new Stack<String>();;
 	
 	public String analyse(String toBeAnalysed) {
 		System.out.println("Para ser analisado: " + toBeAnalysed);
@@ -43,7 +40,7 @@ public class LexicalAnalyser {
 	}
 
 	public String split(String text) {
-		String lexicalNumbers = "";
+		int numberOfLines = 0;
 		StringBuilder toBeAnalysed = new StringBuilder();
 		char c[] = text.toCharArray();
 		for (char aux : c) {
@@ -89,6 +86,10 @@ public class LexicalAnalyser {
 						}
 					}
 				}else {
+					if(aux == '\n') {
+						numberOfLines++;
+					}
+					
 					if(toBeAnalysed.length() > 0) {
 							stack.push(analyse(toBeAnalysed.toString()));
 							toBeAnalysed.setLength(0);
@@ -99,10 +100,14 @@ public class LexicalAnalyser {
 		if(toBeAnalysed.length() > 0) {
 			stack.push(analyse(toBeAnalysed.toString()));	
 		}
+		
+		//#ToDo put on table
 		while (!stack.isEmpty()) 
 		{ 
 		    System.out.println(stack.pop()); 
 		}
+		
+		
 		String message = "Sucess!";
 		return message;
 

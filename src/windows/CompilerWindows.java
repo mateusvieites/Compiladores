@@ -139,7 +139,6 @@ public class CompilerWindows extends JFrame{
 			}
 		});
 		fileMenu.add(openFileMenuItem);
-		
 		JMenu settingsMenu = new JMenu("Settings");
 		menuBar.add(settingsMenu);
 		contentPane = new JPanel();
@@ -209,7 +208,7 @@ public class CompilerWindows extends JFrame{
 				
 			}
 		});
-		btnNewButton.setBounds(458, 13, 89, 23);
+		btnNewButton.setBounds(177, 463, 89, 23);
 		contentPane.add(btnNewButton);
 		
 		
