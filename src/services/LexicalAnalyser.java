@@ -7,7 +7,7 @@ import entities.Lexical;
 
 public class LexicalAnalyser {
 	Map<String, Integer> tokens = Lexical.getTokens();
-	Stack<String> stack = new Stack<String>();;
+	Stack<String> stack = new Stack<String>();
 	
 	public String analyse(String toBeAnalysed) {
 		System.out.println("Para ser analisado: " + toBeAnalysed);
@@ -17,9 +17,10 @@ public class LexicalAnalyser {
 	            Integer.parseInt(toBeAnalysed);
 	            toBeAnalysed = "Inteiro";
 	        }catch(Exception e){
-	            
+	            return "error: " +"*" +toBeAnalysed + "* startsWith " +"a digit";
 	        }
 		}
+		
 		
 		int value;
 		if (tokens.containsKey(toBeAnalysed)) {
@@ -55,7 +56,7 @@ public class LexicalAnalyser {
 				}
 				toBeAnalysed.append(aux);
 			}else {
-				if(aux != ' ' && aux != '\n' && aux != '\r') {
+				if(aux != ' ' && aux != '\n' && aux != '\r' && aux !='\t') {
 					if(!toBeAnalysed.equals("")) {
 						if(aux == '_' && isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
 							toBeAnalysed.append(aux);

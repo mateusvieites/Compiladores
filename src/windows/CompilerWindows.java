@@ -19,6 +19,8 @@ import javax.swing.text.Element;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.StyleConstants;
 
+import entities.Info;
+import model.InfoModel;
 import services.FileActions;
 import services.LexicalAnalyser;
 
@@ -36,6 +38,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTable;
 public class CompilerWindows extends JFrame{
 
 	private JPanel contentPane;
@@ -45,6 +48,11 @@ public class CompilerWindows extends JFrame{
 	private JPanel paneColorText;
 	private Color colorText;
 	JTextPane console = new JTextPane();
+	private javax.swing.JScrollPane jScrollPane1;
+	
+	/*Table test*/
+	InfoModel infoModel = new InfoModel();
+	private JTable infoTable;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -212,15 +220,38 @@ public class CompilerWindows extends JFrame{
 		contentPane.add(btnNewButton);
 		
 		
+		/* Table test */
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(469, 17, 161, 374);
+		contentPane.add(scrollPane);
+		infoTable = new JTable();
+		scrollPane.setViewportView(infoTable);
+		infoTable.setModel(infoModel);
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Info i = new Info();
+				i.setKey(1);
+				i.setWord("cu");
+				infoModel.addRow(i);
+			}
+		});
+		btnNewButton_1.setBounds(466, 405, 89, 23);
+		contentPane.add(btnNewButton_1);
+		
+		
 		
 		/* SHORTCURST */
-		InputMap inputMap = this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),"forward");
-		this.getRootPane().getActionMap().put("forward", new AbstractAction(){
-		    public void actionPerformed(ActionEvent arg0) {
-		    	console.setText(validate(jta.getText()));
-		    }
-		});
+		/*
+		 * InputMap inputMap =
+		 * this.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+		 * inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),"forward");
+		 * this.getRootPane().getActionMap().put("forward", new AbstractAction(){ public
+		 * void actionPerformed(ActionEvent arg0) {
+		 * console.setText(validate(jta.getText())); } });
+		 */
 
 
 	}

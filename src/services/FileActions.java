@@ -28,7 +28,6 @@ public class FileActions {
 				if (scanner.hasNext()) {
 					aux += '\n';
 				}
-				
 			}
 		} catch (IOException exe) {
 			exe.printStackTrace();
