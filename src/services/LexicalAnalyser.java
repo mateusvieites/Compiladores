@@ -8,16 +8,17 @@ import entities.Lexical;
 public class LexicalAnalyser {
 	Map<String, Integer> tokens = Lexical.getTokens();
 	Stack<String> stack = new Stack<String>();
+	Stack<String> word = new Stack<String>();
 	
 	public String analyse(String toBeAnalysed) {
 		System.out.println("Para ser analisado: " + toBeAnalysed);
-		
+		word.push(toBeAnalysed);
 		if(Character.isDigit(toBeAnalysed.charAt(0))) {
 			try{
 	            Integer.parseInt(toBeAnalysed);
 	            toBeAnalysed = "Inteiro";
 	        }catch(Exception e){
-	            return "error: " +"*" +toBeAnalysed + "* startsWith " +"a digit";
+	            return toBeAnalysed + "_" + "illegal";
 	        }
 		}
 		
@@ -29,7 +30,7 @@ public class LexicalAnalyser {
 			value = 25;
 		}
 
-		return String.valueOf(value);
+		return  toBeAnalysed + "_" +String.valueOf(value);
 	}
 	
 	private boolean isSpecialCase(char c, char compare) {
@@ -40,7 +41,7 @@ public class LexicalAnalyser {
 		return Character.isDigit(charTest) || Character.isLetter(charTest);
 	}
 
-	public String split(String text) {
+	public Stack split(String text) {
 		int numberOfLines = 0;
 		StringBuilder toBeAnalysed = new StringBuilder();
 		char c[] = text.toCharArray();
@@ -102,15 +103,13 @@ public class LexicalAnalyser {
 			stack.push(analyse(toBeAnalysed.toString()));	
 		}
 		
-		//#ToDo put on table
-		while (!stack.isEmpty()) 
-		{ 
-		    System.out.println(stack.pop()); 
-		}
+		Stack aux = new Stack();
+        
+        while(!stack.isEmpty()){
+            	aux.push(stack.pop());
+        }
 		
-		
-		String message = "Sucess!";
-		return message;
+		return aux;
 
 	}
 }

@@ -2,19 +2,22 @@ package entities;
 
 public class Info {
 	private String word;
-	private Integer key;
+	private String key;
 	
+
 	public String getWord() {
 		return word;
 	}
 	public void setWord(String word) {
 		this.word = word;
 	}
-	public Integer getKey() {
+	
+	public String getKey() {
 		return key;
 	}
-	public void setKey(Integer key) {
+	public void setKey(String key) {
 		this.key = key;
+	
 	}
 	
 }

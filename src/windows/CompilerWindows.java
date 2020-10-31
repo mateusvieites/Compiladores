@@ -34,6 +34,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Stack;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextPane;
 import java.awt.event.MouseAdapter;
@@ -83,10 +84,11 @@ public class CompilerWindows extends JFrame{
         console.setText(consoleMessage);
 	}
 	
-	public String validate(String toBeAnalysed) {
-		if(toBeAnalysed.equals(null) || toBeAnalysed.equals("") || toBeAnalysed.equals(" ")) {
-			return "error=nothing to compile";
-		}
+	public Stack validate(String toBeAnalysed) {
+		/*
+		 * if(toBeAnalysed.equals(null) || toBeAnalysed.equals("") ||
+		 * toBeAnalysed.equals(" ")) { return "error=nothing to compile"; }
+		 */
 		LexicalAnalyser analyseThisText = new LexicalAnalyser();
 		return analyseThisText.split(jta.getText());
 		
@@ -207,17 +209,7 @@ public class CompilerWindows extends JFrame{
 		colorText = Color.BLACK;
         paneColorText.setBackground(colorText);
 		
-		
-		JButton btnNewButton = new JButton("Compiler");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				String aux = validate(jta.getText());
-				showInConsole(aux);
-				
-			}
-		});
-		btnNewButton.setBounds(177, 463, 89, 23);
-		contentPane.add(btnNewButton);
+
 		
 		
 		/* Table test */
@@ -233,15 +225,44 @@ public class CompilerWindows extends JFrame{
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Info i = new Info();
-				i.setKey(1);
 				i.setWord("cu");
+				i.setKey("1");
 				infoModel.addRow(i);
 			}
 		});
 		btnNewButton_1.setBounds(466, 405, 89, 23);
 		contentPane.add(btnNewButton_1);
 		
-		
+		JButton btnNewButton = new JButton("Compiler");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Stack stack = validate(jta.getText());
+				String string;
+				System.out.println("Número de linhas: " + infoModel.getLines());
+				Stack aux = stack;
+				
+				if(infoModel.getLines() > 0) {
+					
+					infoModel.clearTable();
+				}
+				
+				while(!aux.isEmpty()) {
+					Info i = new Info();
+					string = aux.pop().toString();
+					String splitString[] = string.split("_");
+					i.setWord(splitString[0]);
+					i.setKey(splitString[1]);
+					infoModel.addRow(i);
+					if(splitString[1].startsWith("illegal")) {
+						break;
+					}
+				}
+				
+				
+			}
+		});
+		btnNewButton.setBounds(177, 463, 89, 23);
+		contentPane.add(btnNewButton);
 		
 		/* SHORTCURST */
 		/*
