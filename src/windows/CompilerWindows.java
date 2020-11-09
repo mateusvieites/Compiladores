@@ -217,17 +217,6 @@ public class CompilerWindows extends JFrame{
 		scrollPane.setViewportView(infoTable);
 		infoTable.setModel(infoModel);
 		
-		JButton btnNewButton_1 = new JButton("New button");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Info i = new Info();
-				i.setWord("cu");
-				i.setKey("1");
-				infoModel.addRow(i);
-			}
-		});
-		btnNewButton_1.setBounds(466, 405, 89, 23);
-		contentPane.add(btnNewButton_1);
 		
 		JButton btnNewButton = new JButton("Compiler");
 		btnNewButton.addActionListener(new ActionListener() {
