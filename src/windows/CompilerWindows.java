@@ -3,14 +3,11 @@ package windows;
 import java.awt.Color;
 import java.awt.EventQueue;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.InputMap;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -28,10 +25,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Stack;
@@ -50,6 +44,8 @@ public class CompilerWindows extends JFrame{
 	private Color colorText;
 	JTextPane console = new JTextPane();
 	private javax.swing.JScrollPane jScrollPane1;
+	
+	Stack<String> stack;
 	
 	/*Table test*/
 	InfoModel infoModel = new InfoModel();
@@ -236,10 +232,9 @@ public class CompilerWindows extends JFrame{
 		JButton btnNewButton = new JButton("Compiler");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Stack stack = validate(jta.getText());
+				stack = validate(jta.getText());
 				String string;
-				System.out.println("Número de linhas: " + infoModel.getLines());
-				Stack aux = stack;
+				Stack<String> aux = stack;
 				
 				if(infoModel.getLines() > 0) {
 					

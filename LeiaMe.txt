@@ -1,0 +1,5 @@
+O projeto também está no github
+https://github.com/mateusvieites/Compiladores
+
+É só abrir o eclipse e open file coloca em uma pasta o src e roda normalmente
+Eu ainda não criei um main, ou seja, precisa ser rodado por enquanto pelo CompilerWindows
