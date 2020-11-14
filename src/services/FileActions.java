@@ -1,6 +1,7 @@
 package services;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -15,6 +16,19 @@ public class FileActions {
 	public static FileActions getInstance() {
 		return uniqueInstance;
 	}
+	
+	public static void save(String FilePath, String text) {
+		if(!FilePath.equals("notAValidPath")) {
+			FileWriter arquivo;
+			try {
+				arquivo = new FileWriter(FilePath);
+				arquivo.write(text);
+				arquivo.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public static String getText(String pathFile) throws IOException {
 		File arquivo = new File(pathFile);
@@ -22,8 +36,11 @@ public class FileActions {
 		String test;
 		try {
 			Scanner scanner = new Scanner(arquivo);
+			
 			while (scanner.hasNext()) {
+				System.out.println("entrou");
 				test = scanner.nextLine();
+				
 				aux += test;
 				if (scanner.hasNext()) {
 					aux += '\n';
@@ -36,6 +53,7 @@ public class FileActions {
 	}
 
 	public static String filesGetFilePath() {
+		System.out.println("entrou");
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new FileNameExtensionFilter("text files","txt"));
 		fileChooser.setAcceptAllFileFilterUsed(false);

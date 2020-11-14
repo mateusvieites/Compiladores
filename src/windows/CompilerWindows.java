@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Element;
@@ -17,6 +18,7 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import entities.Info;
+import entities.OberserverFile;
 import model.InfoModel;
 import services.FileActions;
 import services.LexicalAnalyser;
@@ -44,8 +46,16 @@ public class CompilerWindows extends JFrame{
 	private Color colorText;
 	JTextPane console = new JTextPane();
 	private javax.swing.JScrollPane jScrollPane1;
-	
+	/* ab */
 	Stack<String> stack;
+	public static TitledBorder title;
+	
+	public static void modifyTitle(String newTitle) {
+		System.out.println("Entrou no titulo!");
+		System.out.println(newTitle);
+		title.setTitle(newTitle);
+		System.out.println(title.getTitle());
+	}
 	
 	/*Table test*/
 	InfoModel infoModel = new InfoModel();
@@ -80,7 +90,7 @@ public class CompilerWindows extends JFrame{
         console.setText(consoleMessage);
 	}
 	
-	public Stack validate(String toBeAnalysed) {
+	public Stack<String> validate(String toBeAnalysed) {
 		/*
 		 * if(toBeAnalysed.equals(null) || toBeAnalysed.equals("") ||
 		 * toBeAnalysed.equals(" ")) { return "error=nothing to compile"; }
@@ -91,62 +101,10 @@ public class CompilerWindows extends JFrame{
 	}
 
 	public CompilerWindows() {
+
 		setSize(656, 545);
 		setLocationRelativeTo(null);
 		
-		JMenuBar menuBar = new JMenuBar();
-		setJMenuBar(menuBar);
-		
-		JMenu fileMenu = new JMenu("File");
-		menuBar.add(fileMenu);
-		
-		JMenuItem saveMenuItem = new JMenuItem("Save");
-		saveMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-				if(!FilePath.equals("notAValidPath")) {
-						FileWriter arquivo;
-						try {
-							arquivo = new FileWriter(FilePath);
-							arquivo.write(jta.getText());
-							arquivo.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-				}
-				
-				
-			}
-		});
-		
-		JMenuItem newMenuItem = new JMenuItem("New");
-		newMenuItem.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				jta.setText("");
-				FilePath = "notAValidPath";
-			}
-		});
-		fileMenu.add(newMenuItem);
-		fileMenu.add(saveMenuItem);
-		
-		JMenuItem openFileMenuItem = new JMenuItem("Open File");
-		openFileMenuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				FilePath = FileActions.filesGetFilePath();
-				
-				if(!FilePath.equals("notAValidPath")) {
-					try {
-						jta.setText(FileActions.getText(FilePath));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
-		fileMenu.add(openFileMenuItem);
-		JMenu settingsMenu = new JMenu("Settings");
-		menuBar.add(settingsMenu);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -159,6 +117,7 @@ public class CompilerWindows extends JFrame{
 
 		lines.setBackground(Color.WHITE);
 		lines.setEditable(false);
+		
 
 		jta.getDocument().addDocumentListener(new DocumentListener() {
 			public String getText() {
@@ -191,6 +150,9 @@ public class CompilerWindows extends JFrame{
 		Border border = BorderFactory.createLineBorder(Color.BLACK);
 		lines.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(0, 5, 0, 5)));
 
+		title = BorderFactory.createTitledBorder("title");
+		jsp.setBorder(title);
+		
 		contentPane.setLayout(null);
 		jsp.setViewportView(jta);
 		jsp.setRowHeaderView(lines);
@@ -205,6 +167,79 @@ public class CompilerWindows extends JFrame{
 		colorText = Color.BLACK;
         paneColorText.setBackground(colorText);
 		
+        
+        
+        /* menuBar */
+        JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		JMenu fileMenu = new JMenu("File");
+		menuBar.add(fileMenu);
+		
+		JMenuItem saveMenuItem = new JMenuItem("Save");
+		saveMenuItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				
+				if(!FilePath.equals("notAValidPath")) {
+						FileWriter arquivo;
+						try {
+							arquivo = new FileWriter(FilePath);
+							arquivo.write(jta.getText());
+							arquivo.close();
+						} catch (IOException ex) {
+							ex.printStackTrace();
+						}
+				}
+				
+				
+			}
+		});
+		
+		JMenuItem newMenuItem = new JMenuItem("New");
+		newMenuItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				jta.setText("");
+				FilePath = "notAValidPath";
+				/*
+				 * NewFileWindows fileWindows = new NewFileWindows();
+				 * title.setTitle(fileWindows.getName());
+				 */
+				
+				testDialog test = new testDialog();
+				test.setVisible(true);
+				title.setTitle(test.getText());
+				/* aqui */
+				repaint();
+			}
+		});
+		fileMenu.add(newMenuItem);
+		fileMenu.add(saveMenuItem);
+		
+		JMenuItem openFileMenuItem = new JMenuItem("Open File");
+		openFileMenuItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				FilePath = FileActions.filesGetFilePath();
+				
+				System.out.println("Caminho: " + FilePath);
+				if(!FilePath.equals("notAValidPath")) {
+					try {
+						jta.setText(FileActions.getText(FilePath));
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+				}
+			}
+		});
+		fileMenu.add(openFileMenuItem);
+		
+        JMenuItem renameMenuItem = new JMenuItem("Rename");
+		fileMenu.add(renameMenuItem);
+		
+		JMenu settingsMenu = new JMenu("Settings");
+		menuBar.add(settingsMenu);
 
 		
 		
@@ -247,6 +282,18 @@ public class CompilerWindows extends JFrame{
 		});
 		btnNewButton.setBounds(177, 463, 89, 23);
 		contentPane.add(btnNewButton);
+		
+		
+		JButton btnNewButton_1 = new JButton("New button");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				repaint();
+			}
+		});
+		btnNewButton_1.setBounds(479, 402, 89, 23);
+		contentPane.add(btnNewButton_1);
+		
+		
 		
 		/* SHORTCURST */
 		/*

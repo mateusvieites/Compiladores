@@ -15,17 +15,26 @@ public class LexicalAnalyser {
 		word.push(toBeAnalysed);
 		if(Character.isDigit(toBeAnalysed.charAt(0))) {
 			try{
-	            Integer.parseInt(toBeAnalysed);
-	            toBeAnalysed = "Inteiro";
+	            int i = Integer.parseInt(toBeAnalysed);
+	            if(i > -32767 && i < 32767) {
+	            	toBeAnalysed = "Inteiro";
+	            }else {
+	            	 return toBeAnalysed + "_" + "illegal";
+	            }
 	        }catch(Exception e){
 	            return toBeAnalysed + "_" + "illegal";
 	        }
 		}
 		
+		if(toBeAnalysed.length() > 35) {
+			return toBeAnalysed + "_" + "illegal";
+		}
 		
 		int value;
-		if (tokens.containsKey(toBeAnalysed)) {
-			value = tokens.get(toBeAnalysed);
+		String temp = toBeAnalysed.toUpperCase();
+		System.out.println("mAISUCULO: " + toBeAnalysed.toUpperCase());
+		if (tokens.containsKey(temp)) {
+			value = tokens.get(temp);
 		} else {
 			value = 25;
 		}
