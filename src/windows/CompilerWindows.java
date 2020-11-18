@@ -22,6 +22,7 @@ import entities.OberserverFile;
 import model.InfoModel;
 import services.FileActions;
 import services.LexicalAnalyser;
+import services.SyntaxAnalysis;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -49,6 +50,8 @@ public class CompilerWindows extends JFrame{
 	/* ab */
 	Stack<String> stack;
 	public static TitledBorder title;
+	
+	String error;
 	
 	public static void modifyTitle(String newTitle) {
 		System.out.println("Entrou no titulo!");
@@ -80,7 +83,7 @@ public class CompilerWindows extends JFrame{
 		}
 	
 	private void showInConsole(String consoleMessage) {
-		if(consoleMessage.startsWith("error")) {
+		if(consoleMessage.startsWith("Error")) {
 			colorText = Color.RED;
 		}else {
 			colorText = Color.BLACK;
@@ -256,9 +259,12 @@ public class CompilerWindows extends JFrame{
 		JButton btnNewButton = new JButton("Compiler");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				console.setText("");
 				stack = validate(jta.getText());
 				String string;
+				String lineError = "line";
 				Stack<String> aux = stack;
+				boolean debug =  true;
 				
 				if(infoModel.getLines() > 0) {
 					
@@ -271,10 +277,21 @@ public class CompilerWindows extends JFrame{
 					String splitString[] = string.split("_");
 					i.setWord(splitString[0]);
 					i.setKey(splitString[1]);
+					System.out.println("Palavra: " + splitString[0] + " Key: " +splitString[1] + " Linha: " + splitString[2]);
 					infoModel.addRow(i);
 					if(splitString[1].startsWith("illegal")) {
+						error = splitString[0];
+						lineError = splitString[2];
+						debug = false;
 						break;
 					}
+				}
+				
+				if(debug) {
+					SyntaxAnalysis analysis = new SyntaxAnalysis();
+					analysis.name(stack);
+				}else {
+					showInConsole("Error: " + error + " illegal" + " in line: " + lineError);
 				}
 				
 				

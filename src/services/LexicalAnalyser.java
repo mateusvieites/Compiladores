@@ -10,7 +10,7 @@ public class LexicalAnalyser {
 	Stack<String> stack = new Stack<String>();
 	Stack<String> word = new Stack<String>();
 	
-	public String analyse(String toBeAnalysed) {
+	public String analyse(String toBeAnalysed,int line) {
 		System.out.println("Para ser analisado: " + toBeAnalysed);
 		word.push(toBeAnalysed);
 		if(Character.isDigit(toBeAnalysed.charAt(0))) {
@@ -19,15 +19,15 @@ public class LexicalAnalyser {
 	            if(i > -32767 && i < 32767) {
 	            	toBeAnalysed = "Inteiro";
 	            }else {
-	            	 return toBeAnalysed + "_" + "illegal";
+	            	 return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
 	            }
 	        }catch(Exception e){
-	            return toBeAnalysed + "_" + "illegal";
+	            return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
 	        }
 		}
 		
 		if(toBeAnalysed.length() > 35) {
-			return toBeAnalysed + "_" + "illegal";
+			return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
 		}
 		
 		int value;
@@ -39,7 +39,7 @@ public class LexicalAnalyser {
 			value = 25;
 		}
 
-		return  toBeAnalysed + "_" +String.valueOf(value);
+		return  toBeAnalysed + "_" +String.valueOf(value)  + "_" + String.valueOf(line);
 	}
 	
 	private boolean isSpecialCase(char c, char compare) {
@@ -51,7 +51,7 @@ public class LexicalAnalyser {
 	}
 
 	public Stack split(String text) {
-		int numberOfLines = 0;
+		int numberOfLines = 1;
 		StringBuilder toBeAnalysed = new StringBuilder();
 		char c[] = text.toCharArray();
 		for (char aux : c) {
@@ -60,7 +60,7 @@ public class LexicalAnalyser {
 			if(isDigitOrIsLetter(aux)) {
 				if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0) {
 					if(!isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
-						stack.push(analyse(toBeAnalysed.toString()));
+						stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
 						toBeAnalysed.setLength(0);
 					}
 				}
@@ -82,13 +82,13 @@ public class LexicalAnalyser {
 							}else if(isSpecialCase(toBeAnalysed.charAt(0),'>')){
 								toBeAnalysed.append(aux);
 							}else {
-								stack.push(analyse(toBeAnalysed.toString()));
+								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
 								toBeAnalysed.setLength(0);
 								toBeAnalysed.append(aux);
 							}
 						}else {
 							if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0){
-								stack.push(analyse(toBeAnalysed.toString()));
+								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
 								toBeAnalysed.setLength(0);
 								toBeAnalysed.append(aux);
 							}else {
@@ -102,14 +102,14 @@ public class LexicalAnalyser {
 					}
 					
 					if(toBeAnalysed.length() > 0) {
-							stack.push(analyse(toBeAnalysed.toString()));
+							stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
 							toBeAnalysed.setLength(0);
 					}
 				}
 			}
 		}
 		if(toBeAnalysed.length() > 0) {
-			stack.push(analyse(toBeAnalysed.toString()));	
+			stack.push(analyse(toBeAnalysed.toString(),numberOfLines));	
 		}
 		
 		Stack aux = new Stack();
