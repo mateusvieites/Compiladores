@@ -9,6 +9,7 @@ public class LexicalAnalyser {
 	Map<String, Integer> tokens = Lexical.getTokens();
 	Stack<String> stack = new Stack<String>();
 	Stack<String> word = new Stack<String>();
+	boolean comment = false;
 	
 	public String analyse(String toBeAnalysed,int line) {
 		System.out.println("Para ser analisado: " + toBeAnalysed);
@@ -57,6 +58,34 @@ public class LexicalAnalyser {
 		for (char aux : c) {
 			System.out.println(aux);
 			
+		if(comment) {
+			System.out.println("tamo no comentario galera");
+			if(isDigitOrIsLetter(aux)) {
+				if(toBeAnalysed.length() > 0) {
+					toBeAnalysed.setLength(0);
+					toBeAnalysed.append(aux);
+				}else {
+					toBeAnalysed.append(aux);
+				}
+			}else {
+				if(toBeAnalysed.length()>0) {
+					if(aux == '>' && isSpecialCase(toBeAnalysed.charAt(0), '*')) {
+						
+						stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
+						toBeAnalysed.setLength(0);
+						toBeAnalysed.append(aux);
+						comment = false;
+						System.out.println("acabo o comentario galera");
+					}else {
+						toBeAnalysed.setLength(0);
+						toBeAnalysed.append(aux);
+					}
+				}else {
+					toBeAnalysed.setLength(0);
+					toBeAnalysed.append(aux);
+				}
+			}
+		}else {
 			if(isDigitOrIsLetter(aux)) {
 				if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0) {
 					if(!isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
@@ -70,9 +99,7 @@ public class LexicalAnalyser {
 					if(!toBeAnalysed.equals("")) {
 						if(aux == '_' && isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
 							toBeAnalysed.append(aux);
-						}else if((aux == '.' || aux == '=') && toBeAnalysed.length() > 0){
-							
-							//#ToDo polish
+						}else if(aux == '=' && toBeAnalysed.length() > 0){
 							if(isSpecialCase(toBeAnalysed.charAt(0),'.')) {
 								toBeAnalysed.append(aux);
 							}else if(isSpecialCase(toBeAnalysed.charAt(0),':')){
@@ -86,6 +113,27 @@ public class LexicalAnalyser {
 								toBeAnalysed.setLength(0);
 								toBeAnalysed.append(aux);
 							}
+						}else if(aux == '.' && toBeAnalysed.length() > 0 ){
+							if(isSpecialCase(toBeAnalysed.charAt(0), '.')) {
+								toBeAnalysed.append(aux);
+							}else {
+								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
+								toBeAnalysed.setLength(0);
+								toBeAnalysed.append(aux);
+							}
+						}else if(aux == '*' && toBeAnalysed.length() > 0) {
+							if(isSpecialCase(toBeAnalysed.charAt(0), '<')) {
+								comment = true;
+								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
+								toBeAnalysed.setLength(0);
+								toBeAnalysed.append(aux);
+								
+							}else {
+								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
+								toBeAnalysed.setLength(0);
+								toBeAnalysed.append(aux);
+							}
+							
 						}else {
 							if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0){
 								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
@@ -100,15 +148,18 @@ public class LexicalAnalyser {
 					if(aux == '\n') {
 						numberOfLines++;
 					}
-					
-					if(toBeAnalysed.length() > 0) {
-							stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-							toBeAnalysed.setLength(0);
+			
+						
+						if(toBeAnalysed.length() > 0) {
+								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
+								toBeAnalysed.setLength(0);
+						}
 					}
 				}
-			}
 		}
-		if(toBeAnalysed.length() > 0) {
+		
+		}
+		if(toBeAnalysed.length() > 0 && !comment) {
 			stack.push(analyse(toBeAnalysed.toString(),numberOfLines));	
 		}
 		
