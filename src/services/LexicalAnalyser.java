@@ -33,7 +33,6 @@ public class LexicalAnalyser {
 		
 		int value;
 		String temp = toBeAnalysed.toUpperCase();
-		System.out.println("mAISUCULO: " + toBeAnalysed.toUpperCase());
 		if (tokens.containsKey(temp)) {
 			value = tokens.get(temp);
 		} else {
@@ -59,7 +58,6 @@ public class LexicalAnalyser {
 			System.out.println(aux);
 			
 		if(comment) {
-			System.out.println("tamo no comentario galera");
 			if(isDigitOrIsLetter(aux)) {
 				if(toBeAnalysed.length() > 0) {
 					toBeAnalysed.setLength(0);
@@ -75,7 +73,6 @@ public class LexicalAnalyser {
 						toBeAnalysed.setLength(0);
 						toBeAnalysed.append(aux);
 						comment = false;
-						System.out.println("acabo o comentario galera");
 					}else {
 						toBeAnalysed.setLength(0);
 						toBeAnalysed.append(aux);
@@ -127,6 +124,7 @@ public class LexicalAnalyser {
 								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
 								toBeAnalysed.setLength(0);
 								toBeAnalysed.append(aux);
+								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
 								
 							}else {
 								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
