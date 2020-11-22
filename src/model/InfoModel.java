@@ -12,7 +12,6 @@ public class InfoModel extends AbstractTableModel{
 	private List<Info> data = new ArrayList<>();
 	private String[] colum = {"Word","Key"};
 	private int line; 
-	
 
     @Override
     public String getColumnName(int column) {
@@ -46,6 +45,7 @@ public class InfoModel extends AbstractTableModel{
         return null;
         
     }
+    
     
     public void addRow(Info p){
     	line++;
