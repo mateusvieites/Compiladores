@@ -101,8 +101,9 @@ public class CompilerWindows extends JFrame{
 
 	public CompilerWindows() {
 
-		setSize(656, 545);
+		setSize(656, 546);
 		setLocationRelativeTo(null);
+		setResizable(false);
 		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
