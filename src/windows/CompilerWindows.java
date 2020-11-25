@@ -18,7 +18,6 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import entities.Info;
-import entities.OberserverFile;
 import model.InfoModel;
 import services.FileActions;
 import services.LexicalAnalyser;
@@ -26,9 +25,11 @@ import services.SyntaxAnalysis;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Stack;
@@ -53,12 +54,7 @@ public class CompilerWindows extends JFrame{
 	
 	String error;
 	
-	public static void modifyTitle(String newTitle) {
-		System.out.println("Entrou no titulo!");
-		System.out.println(newTitle);
-		title.setTitle(newTitle);
-		System.out.println(title.getTitle());
-	}
+
 	
 	/*Table test*/
 	InfoModel infoModel = new InfoModel();
@@ -184,15 +180,27 @@ public class CompilerWindows extends JFrame{
 			@Override
 			public void mousePressed(MouseEvent e) {
 				
+				System.out.println("FilePath = " + FilePath);
 				if(!FilePath.equals("notAValidPath")) {
 						FileWriter arquivo;
 						try {
 							arquivo = new FileWriter(FilePath);
 							arquivo.write(jta.getText());
 							arquivo.close();
-						} catch (IOException ex) {
-							ex.printStackTrace();
-						}
+						} catch (IOException ex) {}
+				}else {
+					FilePath = FileActions.getPath();
+					
+					if(!FilePath.equals("notAValidPath")) {
+						FileWriter arquivo;
+						try {
+							FilePath = FilePath + File.separator + title.getTitle() + ".txt";
+							arquivo = new FileWriter(FilePath);
+							arquivo.write(jta.getText());
+							arquivo.close();
+							System.out.println("Salvou em: " + FilePath);
+						} catch (IOException ex) {}
+					}
 				}
 				
 				
@@ -203,18 +211,16 @@ public class CompilerWindows extends JFrame{
 		newMenuItem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				jta.setText("");
-				FilePath = "notAValidPath";
-				/*
-				 * NewFileWindows fileWindows = new NewFileWindows();
-				 * title.setTitle(fileWindows.getName());
-				 */
-				
-				testDialog test = new testDialog();
-				test.setVisible(true);
-				title.setTitle(test.getText());
-				/* aqui */
-				repaint();
+				try{
+					String test = JOptionPane.showInputDialog(null,
+						 "File Name", "Name", JOptionPane.INFORMATION_MESSAGE);
+					if(!test.equals(null) && !test.equals("null")) {
+						jta.setText("");
+						FilePath = "notAValidPath";
+						title.setTitle(test);
+						repaint();
+					}
+				}catch(Exception e1) {}
 			}
 		});
 		fileMenu.add(newMenuItem);
@@ -225,14 +231,15 @@ public class CompilerWindows extends JFrame{
 			@Override
 			public void mousePressed(MouseEvent e) {
 				FilePath = FileActions.filesGetFilePath();
-				
 				System.out.println("Caminho: " + FilePath);
 				if(!FilePath.equals("notAValidPath")) {
 					try {
 						jta.setText(FileActions.getText(FilePath));
-					} catch (IOException ex) {
-						ex.printStackTrace();
-					}
+						String j = FilePath.substring(FilePath.lastIndexOf(File.separator) + 1);
+						j = j.replace(".txt", "");
+						title.setTitle(j);
+						repaint();
+					} catch (IOException ex) {}
 				}
 			}
 		});
@@ -263,7 +270,15 @@ public class CompilerWindows extends JFrame{
 				stack = validate(jta.getText());
 				String string;
 				String lineError = "line";
-				Stack<String> aux = stack;
+				Stack stackTable = new Stack();
+				Stack lexycal = new Stack();
+				
+		        while(!stack.isEmpty()){
+		        		String auxWord = stack.pop();
+		        		stackTable.push(auxWord);
+		        		lexycal.push(auxWord);
+		        }
+		        
 				boolean debug =  true;
 				
 				if(infoModel.getLines() > 0) {
@@ -271,13 +286,12 @@ public class CompilerWindows extends JFrame{
 					infoModel.clearTable();
 				}
 				
-				while(!aux.isEmpty()) {
+				while(!stackTable.isEmpty()) {
 					Info i = new Info();
-					string = aux.pop().toString();
+					string = stackTable.pop().toString();
 					String splitString[] = string.split("_");
 					i.setWord(splitString[0]);
 					i.setKey(splitString[1]);
-					System.out.println("Palavra: " + splitString[0] + " Key: " +splitString[1] + " Linha: " + splitString[2]);
 					infoModel.addRow(i);
 					if(splitString[1].startsWith("illegal")) {
 						error = splitString[0];
@@ -289,7 +303,11 @@ public class CompilerWindows extends JFrame{
 				
 				if(debug) {
 					SyntaxAnalysis analysis = new SyntaxAnalysis();
-					analysis.name(stack);
+					System.out.println("Entrou aqui!");
+					while(!stack.isEmpty()) {
+						System.out.println("Aqui teste o que tem dentro: " + stack.pop());
+					}
+					analysis.name(lexycal);
 				}else {
 					showInConsole("Error: " + error + " illegal" + " in line: " + lineError);
 				}
@@ -299,16 +317,7 @@ public class CompilerWindows extends JFrame{
 		});
 		btnNewButton.setBounds(177, 463, 89, 23);
 		contentPane.add(btnNewButton);
-		
-		
-		JButton btnNewButton_1 = new JButton("New button");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				repaint();
-			}
-		});
-		btnNewButton_1.setBounds(479, 402, 89, 23);
-		contentPane.add(btnNewButton_1);
+
 		
 		
 		

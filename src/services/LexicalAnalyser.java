@@ -161,13 +161,7 @@ public class LexicalAnalyser {
 			stack.push(analyse(toBeAnalysed.toString(),numberOfLines));	
 		}
 		
-		Stack aux = new Stack();
-        
-        while(!stack.isEmpty()){
-            	aux.push(stack.pop());
-        }
-		
-		return aux;
+		return stack;
 
 	}
 }

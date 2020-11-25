@@ -26,6 +26,11 @@ public class SyntaxAnalysis {
 		 **/
 		
 		/* retorno quando estiver feito tudo precisa mudar o nome*/
+		System.out.println("Dentro do syntatico: ");
+		
+		while(!tokens.empty()) {
+			System.out.println("Elemento dentro: " + tokens.pop());
+		}
 		
 		return tokens;
 		

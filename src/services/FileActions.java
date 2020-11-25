@@ -52,8 +52,19 @@ public class FileActions {
 		return aux;
 	}
 
+	public static String getPath() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setDialogTitle("Select path");
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		int returnD = fileChooser.showOpenDialog(null);
+		if (returnD == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			return file.getPath();
+		} else {
+			return "notAValidPath";
+		}
+	}
 	public static String filesGetFilePath() {
-		System.out.println("entrou");
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileFilter(new FileNameExtensionFilter("text files","txt"));
 		fileChooser.setAcceptAllFileFilterUsed(false);
