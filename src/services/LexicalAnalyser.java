@@ -27,6 +27,19 @@ public class LexicalAnalyser {
 	        }
 		}
 		
+		if(toBeAnalysed.length() > 1) {
+			if(toBeAnalysed.charAt(0) == '-') {
+				
+				char c[] = toBeAnalysed.toCharArray();
+				for (char aux : c) {
+					if(Character.isLetter(aux)) {
+						return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
+					}
+				}
+				toBeAnalysed = "Inteiro";
+			}
+		}
+		
 		if(toBeAnalysed.length() > 35) {
 			return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
 		}
@@ -85,12 +98,21 @@ public class LexicalAnalyser {
 		}else {
 			if(isDigitOrIsLetter(aux)) {
 				if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0) {
-					if(!isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
+					if(!isDigitOrIsLetter(toBeAnalysed.charAt(0))  && toBeAnalysed.charAt(0) != '-') {
 						stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
 						toBeAnalysed.setLength(0);
+						toBeAnalysed.append(aux);
+					}else if(toBeAnalysed.length() > 0 && toBeAnalysed.charAt(0) == '-') {
+						toBeAnalysed.append(aux);
+						
+					}else if(Character.isDigit(toBeAnalysed.charAt(0)) && (Character.isDigit(aux) || Character.isLetter(aux))) {
+						toBeAnalysed.append(aux);
+					}else if(Character.isLetter(toBeAnalysed.charAt(0)) && (Character.isDigit(aux) || Character.isLetter(aux))) {
+						toBeAnalysed.append(aux);
 					}
+				}else {
+					toBeAnalysed.append(aux);	
 				}
-				toBeAnalysed.append(aux);
 			}else {
 				if(aux != ' ' && aux != '\n' && aux != '\r' && aux !='\t') {
 					if(!toBeAnalysed.equals("")) {
