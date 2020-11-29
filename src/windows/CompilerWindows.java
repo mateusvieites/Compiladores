@@ -60,18 +60,6 @@ public class CompilerWindows extends JFrame{
 	InfoModel infoModel = new InfoModel();
 	private JTable infoTable;
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					CompilerWindows frame = new CompilerWindows();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 	
 	private void changeColor( JTextPane textPane, Color corTexto) {
 		MutableAttributeSet attr = textPane.getInputAttributes();
@@ -290,7 +278,7 @@ public class CompilerWindows extends JFrame{
 				while(!stackTable.isEmpty()) {
 					Info i = new Info();
 					string = stackTable.pop().toString();
-					String splitString[] = string.split("_");
+					String splitString[] = string.split("\\|");
 					i.setWord(splitString[0]);
 					i.setKey(splitString[1]);
 					infoModel.addRow(i);

@@ -10,40 +10,40 @@ public class LexicalAnalyser {
 	Stack<String> stack = new Stack<String>();
 	Stack<String> word = new Stack<String>();
 	boolean comment = false;
-	
-	public String analyse(String toBeAnalysed,int line) {
+
+	public String analyse(String toBeAnalysed, int line) {
 		System.out.println("Para ser analisado: " + toBeAnalysed);
 		word.push(toBeAnalysed);
-		if(Character.isDigit(toBeAnalysed.charAt(0))) {
-			try{
-	            int i = Integer.parseInt(toBeAnalysed);
-	            if(i > -32767 && i < 32767) {
-	            	toBeAnalysed = "Inteiro";
-	            }else {
-	            	 return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
-	            }
-	        }catch(Exception e){
-	            return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
-	        }
+		if (Character.isDigit(toBeAnalysed.charAt(0))) {
+			try {
+				int i = Integer.parseInt(toBeAnalysed);
+				if (i > -32767 && i < 32767) {
+					toBeAnalysed = "Inteiro";
+				} else {
+					return toBeAnalysed + "|" + "illegal" + "|" + String.valueOf(line);
+				}
+			} catch (Exception e) {
+				return toBeAnalysed + "|" + "illegal" + "|" + String.valueOf(line);
+			}
 		}
-		
-		if(toBeAnalysed.length() > 1) {
-			if(toBeAnalysed.charAt(0) == '-') {
-				
+
+		if (toBeAnalysed.length() > 1) {
+			if (toBeAnalysed.charAt(0) == '-') {
+
 				char c[] = toBeAnalysed.toCharArray();
 				for (char aux : c) {
-					if(Character.isLetter(aux)) {
-						return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
+					if (Character.isLetter(aux)) {
+						return toBeAnalysed + "|" + "illegal" + "|" + String.valueOf(line);
 					}
 				}
 				toBeAnalysed = "Inteiro";
 			}
 		}
-		
-		if(toBeAnalysed.length() > 35) {
-			return toBeAnalysed + "_" + "illegal" + "_" + String.valueOf(line);
+
+		if (toBeAnalysed.length() > 35) {
+			return toBeAnalysed + "|" + "illegal" + "|" + String.valueOf(line);
 		}
-		
+
 		int value;
 		String temp = toBeAnalysed.toUpperCase();
 		if (tokens.containsKey(temp)) {
@@ -52,9 +52,9 @@ public class LexicalAnalyser {
 			value = 25;
 		}
 
-		return  toBeAnalysed + "_" +String.valueOf(value)  + "_" + String.valueOf(line);
+		return toBeAnalysed + "|" + String.valueOf(value) + "|" + String.valueOf(line);
 	}
-	
+
 	private boolean isSpecialCase(char c, char compare) {
 		return c == compare ? true : false;
 	}
@@ -69,120 +69,139 @@ public class LexicalAnalyser {
 		char c[] = text.toCharArray();
 		for (char aux : c) {
 			System.out.println(aux);
-			
-		if(comment) {
-			if(isDigitOrIsLetter(aux)) {
-				if(toBeAnalysed.length() > 0) {
-					toBeAnalysed.setLength(0);
-					toBeAnalysed.append(aux);
-				}else {
-					toBeAnalysed.append(aux);
-				}
-			}else {
-				if(toBeAnalysed.length()>0) {
-					if(aux == '>' && isSpecialCase(toBeAnalysed.charAt(0), '*')) {
-						
-						stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
+
+			if (comment) {
+				if (isDigitOrIsLetter(aux)) {
+					if (toBeAnalysed.length() > 0) {
 						toBeAnalysed.setLength(0);
 						toBeAnalysed.append(aux);
-						comment = false;
-					}else {
+					} else {
+						toBeAnalysed.append(aux);
+					}
+				} else {
+					if (toBeAnalysed.length() > 0) {
+						if (aux == ')' && isSpecialCase(toBeAnalysed.charAt(0), '*')) {
+
+							// stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+							toBeAnalysed.setLength(0);
+							// toBeAnalysed.append(aux);
+							comment = false;
+						} else {
+							toBeAnalysed.setLength(0);
+							toBeAnalysed.append(aux);
+						}
+					} else {
 						toBeAnalysed.setLength(0);
 						toBeAnalysed.append(aux);
 					}
-				}else {
-					toBeAnalysed.setLength(0);
-					toBeAnalysed.append(aux);
+				}
+			} else {
+				if (isDigitOrIsLetter(aux)) {
+					if (!toBeAnalysed.equals("") && toBeAnalysed.length() > 0) {
+						if (!isDigitOrIsLetter(toBeAnalysed.charAt(0)) && toBeAnalysed.charAt(0) != '-') {
+							stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+							toBeAnalysed.setLength(0);
+							toBeAnalysed.append(aux);
+						} else if (toBeAnalysed.length() > 0 && toBeAnalysed.charAt(0) == '-') {
+							toBeAnalysed.append(aux);
+
+						} else if (Character.isDigit(toBeAnalysed.charAt(0))
+								&& (Character.isDigit(aux) || Character.isLetter(aux))) {
+							toBeAnalysed.append(aux);
+						} else if (Character.isLetter(toBeAnalysed.charAt(0))
+								&& (Character.isDigit(aux) || Character.isLetter(aux))) {
+							toBeAnalysed.append(aux);
+						}
+					} else {
+						toBeAnalysed.append(aux);
+					}
+				} else {
+					if (aux != ' ' && aux != '\n' && aux != '\r' && aux != '\t') {
+						if (!toBeAnalysed.equals("")) {
+							if (aux == '|' && isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
+								toBeAnalysed.append(aux);
+							} else if (aux == '_' && toBeAnalysed.length() > 0) {
+								System.out.println("Entrosou");
+								if (Character.isLetter(toBeAnalysed.charAt(0))) {
+									toBeAnalysed.append(aux);
+								} else {
+									stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+									toBeAnalysed.setLength(0);
+									toBeAnalysed.append(aux);
+								}
+							} else if (aux == '>' && toBeAnalysed.length() == 1) {
+								if (isSpecialCase(toBeAnalysed.charAt(0), '<')) {
+									toBeAnalysed.append(aux);
+								} else {
+									stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+									toBeAnalysed.setLength(0);
+									toBeAnalysed.append(aux);
+								}
+							} else if (aux == '=' && toBeAnalysed.length() > 0) {
+								if (isSpecialCase(toBeAnalysed.charAt(0), '.')) {
+									toBeAnalysed.append(aux);
+								} else if (isSpecialCase(toBeAnalysed.charAt(0), ':')) {
+									toBeAnalysed.append(aux);
+								} else if (isSpecialCase(toBeAnalysed.charAt(0), '<')) {
+									toBeAnalysed.append(aux);
+								} else if (isSpecialCase(toBeAnalysed.charAt(0), '>')) {
+									toBeAnalysed.append(aux);
+								} else {
+									stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+									toBeAnalysed.setLength(0);
+									toBeAnalysed.append(aux);
+								}
+							} else if (aux == '.' && toBeAnalysed.length() > 0) {
+								if (isSpecialCase(toBeAnalysed.charAt(0), '.')) {
+									toBeAnalysed.append(aux);
+								} else {
+									stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+									toBeAnalysed.setLength(0);
+									toBeAnalysed.append(aux);
+								}
+							} else if (aux == '*' && toBeAnalysed.length() > 0) {
+								if (isSpecialCase(toBeAnalysed.charAt(0), '(')) {
+									comment = true;
+									
+									// stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+									toBeAnalysed.setLength(0);
+									// toBeAnalysed.append(aux);
+									// stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+
+								} else {
+									stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+									toBeAnalysed.setLength(0);
+									toBeAnalysed.append(aux);
+								}
+
+							} else {
+								if (!toBeAnalysed.equals("") && toBeAnalysed.length() > 0) {
+									stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+									toBeAnalysed.setLength(0);
+									toBeAnalysed.append(aux);
+								} else {
+									toBeAnalysed.append(aux);
+								}
+							}
+						}
+					} else {
+						if (aux == '\n') {
+							numberOfLines++;
+						}
+
+						if (toBeAnalysed.length() > 0) {
+							stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
+							toBeAnalysed.setLength(0);
+						}
+					}
 				}
 			}
-		}else {
-			if(isDigitOrIsLetter(aux)) {
-				if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0) {
-					if(!isDigitOrIsLetter(toBeAnalysed.charAt(0))  && toBeAnalysed.charAt(0) != '-') {
-						stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-						toBeAnalysed.setLength(0);
-						toBeAnalysed.append(aux);
-					}else if(toBeAnalysed.length() > 0 && toBeAnalysed.charAt(0) == '-') {
-						toBeAnalysed.append(aux);
-						
-					}else if(Character.isDigit(toBeAnalysed.charAt(0)) && (Character.isDigit(aux) || Character.isLetter(aux))) {
-						toBeAnalysed.append(aux);
-					}else if(Character.isLetter(toBeAnalysed.charAt(0)) && (Character.isDigit(aux) || Character.isLetter(aux))) {
-						toBeAnalysed.append(aux);
-					}
-				}else {
-					toBeAnalysed.append(aux);	
-				}
-			}else {
-				if(aux != ' ' && aux != '\n' && aux != '\r' && aux !='\t') {
-					if(!toBeAnalysed.equals("")) {
-						if(aux == '_' && isDigitOrIsLetter(toBeAnalysed.charAt(0))) {
-							toBeAnalysed.append(aux);
-						}else if(aux == '=' && toBeAnalysed.length() > 0){
-							if(isSpecialCase(toBeAnalysed.charAt(0),'.')) {
-								toBeAnalysed.append(aux);
-							}else if(isSpecialCase(toBeAnalysed.charAt(0),':')){
-								toBeAnalysed.append(aux);
-							}else if(isSpecialCase(toBeAnalysed.charAt(0),'<')){
-								toBeAnalysed.append(aux);
-							}else if(isSpecialCase(toBeAnalysed.charAt(0),'>')){
-								toBeAnalysed.append(aux);
-							}else {
-								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-								toBeAnalysed.setLength(0);
-								toBeAnalysed.append(aux);
-							}
-						}else if(aux == '.' && toBeAnalysed.length() > 0 ){
-							if(isSpecialCase(toBeAnalysed.charAt(0), '.')) {
-								toBeAnalysed.append(aux);
-							}else {
-								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-								toBeAnalysed.setLength(0);
-								toBeAnalysed.append(aux);
-							}
-						}else if(aux == '*' && toBeAnalysed.length() > 0) {
-							if(isSpecialCase(toBeAnalysed.charAt(0), '<')) {
-								comment = true;
-								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-								toBeAnalysed.setLength(0);
-								toBeAnalysed.append(aux);
-								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-								
-							}else {
-								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-								toBeAnalysed.setLength(0);
-								toBeAnalysed.append(aux);
-							}
-							
-						}else {
-							if(!toBeAnalysed.equals("") && toBeAnalysed.length() > 0){
-								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-								toBeAnalysed.setLength(0);
-								toBeAnalysed.append(aux);
-							}else {
-								toBeAnalysed.append(aux);
-							}
-						}
-					}
-				}else {
-					if(aux == '\n') {
-						numberOfLines++;
-					}
-			
-						
-						if(toBeAnalysed.length() > 0) {
-								stack.push(analyse(toBeAnalysed.toString(),numberOfLines));
-								toBeAnalysed.setLength(0);
-						}
-					}
-				}
+
 		}
-		
+		if (toBeAnalysed.length() > 0 && !comment) {
+			stack.push(analyse(toBeAnalysed.toString(), numberOfLines));
 		}
-		if(toBeAnalysed.length() > 0 && !comment) {
-			stack.push(analyse(toBeAnalysed.toString(),numberOfLines));	
-		}
-		
+
 		return stack;
 
 	}

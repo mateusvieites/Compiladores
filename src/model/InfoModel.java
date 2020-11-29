@@ -9,15 +9,15 @@ import entities.Info;
 
 public class InfoModel extends AbstractTableModel{
 
-	private List<Info> data = new ArrayList<>();
-	private String[] colum = {"Word","Key"};
-	private int line; 
+    private List<Info> data = new ArrayList<>();
+    private String[] colum = {"Word","Key"};
+    private int line; 
 
     @Override
     public String getColumnName(int column) {
         return colum[column]; //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     @Override
     public int getRowCount() {
         return data.size();
@@ -27,42 +27,42 @@ public class InfoModel extends AbstractTableModel{
     public int getColumnCount() {
         return colum.length;
     }
-    
+
     public int getLines() {
-    	return this.line;
+        return this.line;
     }
 
     @Override
     public Object getValueAt(int linha, int coluna) {
-        
+
         switch(coluna){
             case 0:
-            	return data.get(linha).getWord();
+                return data.get(linha).getWord();
             case 1:
-            	return data.get(linha).getKey();
+                return data.get(linha).getKey();
         }
-        
+
         return null;
-        
+
     }
-    
-    
+
+
     public void addRow(Info p){
-    	line++;
+        line++;
         this.data.add(p);
         this.fireTableDataChanged();
     }
-    
+
     public void removeRow(int linha){
-    	line--;
+        line--;
         this.data.remove(linha);
         this.fireTableRowsDeleted(linha, linha);
     }
-    
+
     public void clearTable() {
-		int size = getRowCount();
-		this.data.clear();
+        int size = getRowCount();
+        this.data.clear();
         fireTableRowsDeleted(0,size);
-	}
-		
+    }
+
 }
